@@ -77,9 +77,9 @@
 
       {% if idea.image %}
       <img
+        class="search-idea-image"
         src="{{ url_for('static', filename='image/' + idea.image) }}"
         alt="{{ idea.title }}"
-        width="350"
       >
       {% endif %}
 
