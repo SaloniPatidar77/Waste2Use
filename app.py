@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, abort, session,send_from_directory, current_app
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from werkzeug.utils import secure_filename
@@ -213,6 +214,7 @@ def login():
 
 @app.route('/logout', methods=['POST'])
 def logout():
+    logout_user()
     session.clear()
     return redirect(url_for('login'))
 
@@ -764,33 +766,42 @@ def community():
         message_text = request.form.get("message", "").strip()
         media_file = request.files.get("image")
 
+        # Message aur media dono empty hain
         if not message_text and (
             not media_file or media_file.filename == ""
         ):
             flash("⚠️ Message cannot be empty", "warning")
             return redirect(url_for("community"))
 
+        # Default: no media
         media_path = None
 
-        media_path = None
+        # Media upload
+        if media_file and media_file.filename != "":
 
-        if media_file:
-            extension = media_file.filename.rsplit('.', 1)[1].lower() if '.' in media_file.filename else ''
+            extension = (
+                media_file.filename.rsplit(".", 1)[1].lower()
+                if "." in media_file.filename
+                else ""
+            )
 
+            # Check image/video extension
             if extension not in IMAGE_EXTENSIONS and extension not in VIDEO_EXTENSIONS:
-               flash("❌ Invalid file type.", "danger")
-            return redirect(url_for("community"))
+                flash("❌ Invalid file type.", "danger")
+                return redirect(url_for("community"))
 
-        filename = secure_filename(media_file.filename)
-        media_path = filename
+            filename = secure_filename(media_file.filename)
 
-        media_file.save(
-        os.path.join(
-            app.config["UPLOAD_FOLDER"],
-            filename
-        )
-    )
+            media_path = filename
 
+            media_file.save(
+                os.path.join(
+                    app.config["UPLOAD_FOLDER"],
+                    filename
+                )
+            )
+
+        # Create community message
         msg = CommunityMessage(
             user_id=session["user_id"],
             username=session["username"],
@@ -804,10 +815,12 @@ def community():
         flash("✅ Message sent successfully!", "success")
         return redirect(url_for("community"))
 
+    # Get all community messages
     messages = CommunityMessage.query.order_by(
         CommunityMessage.timestamp.asc()
     ).all()
 
+    # Convert UTC to IST for display
     for msg in messages:
         if msg.timestamp:
             msg.local_timestamp = (
