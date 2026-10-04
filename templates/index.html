@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Waste2Use{% endblock %}
+
+{% block hero %}
+<section class="video-section">
+  <video autoplay muted loop playsinline class="hero-video">
+    <source src="{{ url_for('static', filename='video/wasteuse.mp4') }}" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="hero-overlay">
+    <h1 class="hero-title">♻️ Waste2Use</h1>
+    <p class="hero-subtext">Turning everyday waste into creative reuse 🌿</p>
+    <a href="{{ url_for('signup') }}" class="btn">Join the Community</a>
+  </div>
+</section>
+{% endblock %}
+
+{% block content %}
+
+<div class="scroll-indicator">
+  <span>Scroll to explore 🌱</span>
+  <div class="arrow">↓</div>
+</div>
+
+<div class="section-divider"></div>
+
+<section class="about-section">
+  <h2>About Waste2Use</h2>
+  <p>
+    Waste2Use is a community built for everyday changemakers who believe small actions can make a big difference.  
+    Here, creativity meets sustainability — discover how to upcycle, reuse, and turn simple waste into beautiful, useful creations.  
+    Join us to share your ideas and inspire a cleaner, greener planet 💚
+  </p>
+</section>
+
+<section class="latest-posts-section">
+  <h2>Latest Community Posts</h2>
+  <div class="posts-container">
+    {% for post in latest_posts or [] %}
+      <article class="post-card">
+        <h3>{{ post.title }}</h3>
+        <p class="meta">by {{ post.user_id or post.author.username if post.author is defined else 'Unknown' }} •
+           {{ post.timestamp.strftime('%d %b %Y') if post.timestamp is defined else (post.created_at.strftime('%d %b %Y') 
+           if post.created_at is defined else '') }}</p>
+        <p>{{ (post.body[:200] ~ ('...' if post.body|length > 200 else '')) if post.body is defined else '' }}</p>
+        {% if post.image %}
+          <img src="{{ url_for('static', filename='image/' ~ post.image) }}" alt="post image">
+        {% endif %}
+      </article>
+    {% else %}
+      <p>No posts yet. <a href="{{ url_for('post') }}">Create the first post</a>!</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

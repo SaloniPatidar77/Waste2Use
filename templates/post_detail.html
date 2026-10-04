@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - Waste2Use{% endblock %}
+
+{% block content %}
+
+<section class="feed">
+
+    <div class="post-card">
+
+        <div class="post-header">
+
+            <div class="user-info">
+
+                <div class="avatar">
+                    {{ post.author.username[0]|upper }}
+                </div>
+
+                <div class="meta">
+                    <h4>{{ post.author.username }}</h4>
+
+                    <span>
+                        {{ post.date_posted.strftime('%d %b %Y • %H:%M') }}
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="post-body">
+
+            {% if post.title %}
+                <h3>{{ post.title }}</h3>
+            {% endif %}
+
+            {% if post.content %}
+                <p>{{ post.content }}</p>
+            {% endif %}
+
+
+            {% if post.media %}
+
+                {% if post.media.lower().endswith('.mp4') %}
+
+                    <video controls class="post-video">
+                        <source src="{{ url_for('static', filename='uploads/' ~ post.media) }}">
+                    </video>
+
+                {% else %}
+
+                    <img
+                        src="{{ url_for('static', filename='uploads/' ~ post.media) }}"
+                        class="post-img"
+                    >
+
+                {% endif %}
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<section class="notifications-page" data-aos="fade-up">
+  <h2>🔔 Your Notifications</h2>
+
+  {% if notifications %}
+    <div class="notifications-list">
+      {% for n in notifications %}
+        <div class="notification-card {{ 'unread' if not n.is_read }}">
+          <div class="notif-icon">
+            {% if 'post' in n.message.lower() %}
+              <i class="fa-solid fa-recycle"></i>
+            {% elif 'like' in n.message.lower() %}
+              <i class="fa-solid fa-heart"></i>
+            {% elif 'comment' in n.message.lower() %}
+              <i class="fa-solid fa-comment"></i>
+            {% else %}
+              <i class="fa-solid fa-bell"></i>
+            {% endif %}
+          </div>
+          <div class="notif-content">
+            <p>{{ n.message }}</p>
+            <small>{{ n.local_timestamp.strftime('%d %b %Y, %I:%M %p') }}</small>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="no-notifs">🌸 You’re all caught up! No new notifications.</p>
+  {% endif %}
+</section>
+{% endblock %}

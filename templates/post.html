@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Create Post - Waste2Use{% endblock %}
+
+{% block content %}
+<section class="post-form-section">
+  <h2>Create a New Post</h2>
+
+  <form action="{{ url_for('post') }}" method="POST" enctype="multipart/form-data" class="card">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input id="title" name="title" type="text" placeholder="Post title" required>
+    </div>
+
+    <div class="form-group">
+      <label for="body">Description</label>
+      <textarea id="body" name="body" rows="5" placeholder="Describe your idea or reuse..." required></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="image">Image (optional)</label>
+      <input id="image" name="image" type="file" accept="image/*">
+    </div>
+
+    <div class="form-group">
+      <label for="video">Video (optional)</label>
+      <input id="video" name="video" type="file" accept="video/*">
+    </div>
+
+    <div class="form-group">
+  <label for="waste_type">Waste Type</label>
+  <select id="waste_type" name="waste_type" required>
+    <option value="">Select waste type</option>
+    <option value="Plastic">Plastic</option>
+    <option value="Cloth">Cloth</option>
+    <option value="Paper">Paper</option>
+    <option value="Rubber">Rubber</option>
+    <option value="Tin">Tin</option>
+    <option value="Coconut">Coconut</option>
+    <option value="Cardboard">Cardboard</option>
+    <option value="Glass">Glass</option>
+    <option value="Metal">Metal</option>
+    <option value="Wood">Wood</option>
+</select>
+</div>
+
+<div class="form-group">
+  <label for="waste_amount">Waste Amount (kg)</label>
+  <input id="waste_amount" name="waste_amount" type="number" step="0.1" placeholder="e.g. 1.2" required>
+</div>
+
+
+    <button class="btn" type="submit">Publish Post</button>
+  </form>
+
+  <section class="preview-section card" aria-live="polite">
+    <h3>Preview</h3>
+    <p><strong>Title:</strong> <span id="preview-title"></span></p>
+    <p><strong>Description:</strong> <span id="preview-body"></span></p>
+    <img id="preview-image" style="max-width:240px; display:none; margin-top:8px;">
+    <video id="preview-video" style="max-width:320px; display:none; margin-top:8px;" controls></video>
+  </section>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // live preview
+  document.addEventListener('DOMContentLoaded', () => {
+    const title = document.getElementById('title');
+    const body = document.getElementById('body');
+    const image = document.getElementById('image');
+    const video = document.getElementById('video');
+
+    const pt = document.getElementById('preview-title');
+    const pb = document.getElementById('preview-body');
+    const pi = document.getElementById('preview-image');
+    const pv = document.getElementById('preview-video');
+
+    if(title) title.addEventListener('input', () => pt.textContent = title.value);
+    if(body) body.addEventListener('input', () => pb.textContent = body.value);
+
+    if(image) image.addEventListener('change', e => {
+      const f = e.target.files[0];
+      if(f){ pi.src = URL.createObjectURL(f); pi.style.display='block'; } else { pi.style.display='none'; }
+    });
+    if(video) video.addEventListener('change', e => {
+      const f = e.target.files[0];
+      if(f){ pv.src = URL.createObjectURL(f); pv.style.display='block'; } else { pv.style.display='none'; }
+    });
+  });
+</script>
+{% endblock %}

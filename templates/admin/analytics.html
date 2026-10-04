@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h1>📊 Admin Analytics</h1>
+
+    <div id="chart"></div>
+
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<script>
+
+const chartData = JSON.parse('{{ data|tojson|safe }}');
+
+const posts = chartData.filter(d => d.type === "Posts");
+
+const searches = chartData.filter(d => d.type === "Searches");
+
+const trace1 = {
+    x: posts.map(d => d.ds),
+    y: posts.map(d => d.y),
+    type: 'scatter',
+    mode: 'lines+markers',
+    name: 'Posts'
+};
+
+const trace2 = {
+    x: searches.map(d => d.ds),
+    y: searches.map(d => d.y),
+    type: 'scatter',
+    mode: 'lines+markers',
+    name: 'Searches'
+};
+
+Plotly.newPlot('chart', [trace1, trace2]);
+
+</script>
+
+{% endblock %}

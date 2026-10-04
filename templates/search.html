@@ -1,0 +1,102 @@
+
+{% extends "base.html" %}
+{% block title %}Search Waste Ideas{% endblock %}
+
+{% block content %}
+<section class="search-section card" style="max-width:900px; margin:auto;">
+
+  <h2>Search Waste Ideas</h2>
+
+  <form method="get" action="{{ url_for('search') }}">
+    <input
+      type="text"
+      name="q"
+      value="{{ query }}"
+      placeholder="Search waste (e.g., bottle, tyre, kapde)..."
+      required
+    >
+    <button type="submit">Search</button>
+  </form>
+
+    {% if materials %}
+
+  <div style="margin-top:20px;">
+
+    <h3>♻️ Materials Detected</h3>
+
+    {% for material in materials %}
+
+    <span
+      style="
+        display:inline-block;
+        padding:8px 14px;
+        margin:5px;
+        border-radius:20px;
+        background:#182848;
+        color:white;
+      "
+    >
+      {{ material }}
+    </span>
+
+    {% endfor %}
+
+  </div>
+
+  {% endif %}
+
+  {% if results %}
+
+  <div class="results" style="margin-top:20px;">
+
+    {% for idea in results %}
+
+    <div
+      class="idea-card"
+      style="
+        border:1px solid #444;
+        padding:12px;
+        margin-bottom:10px;
+        border-radius:10px;
+        background:#0b132b;
+      "
+    >
+<h3>
+    <a
+        href="{{ url_for('idea_details', idea_id=idea.id) }}"
+        style="color:white; text-decoration:none;"
+    >
+        {{ idea.title }}
+    </a>
+</h3>
+      <p class="material">
+        <strong>Material:</strong> {{ idea.material }}
+      </p>
+
+      <p>{{ idea.description }}</p>
+
+      {% if idea.image %}
+      <img
+        src="{{ url_for('static', filename='image/' + idea.image) }}"
+        alt="{{ idea.title }}"
+        width="350"
+      >
+      {% endif %}
+
+    </div>
+
+    {% endfor %}
+
+  </div>
+
+  {% elif query %}
+
+  <p>
+    No matching ideas found for "<b>{{ query }}</b>".
+  </p>
+
+  {% endif %}
+
+</section>
+{% endblock %}
+

@@ -1,0 +1,26 @@
+<h2>📝 All Posts</h2>
+
+<table border="1" cellpadding="10">
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Content</th>
+        <th>User ID</th>
+        <th>Action</th>
+    </tr>
+
+    {% for post in posts %}
+    <tr>
+        <td>{{ post.id }}</td>
+        <td>{{ post.title }}</td>
+        <td>{{ post.content }}</td>
+        <td>{{ post.user_id }}</td>
+        <td>
+            <a href="/admin/delete-post/{{ post.id }}"
+               onclick="return confirm('Delete this post?')">
+               ❌ Delete
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>

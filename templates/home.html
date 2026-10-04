@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block title %}Feed - Waste2Use{% endblock %}
+
+{% block content %}
+
+<section class="feed">
+
+<h2>🌍 Community Feed</h2>
+
+<div class="feed-container">
+
+{% for post in posts %}
+
+<div class="post-card" id="post-{{post.id}}">
+
+<div class="post-badge">
+♻ Upcycled Creation
+</div>
+
+<div class="post-header">
+
+<div class="user-info">
+
+<div class="avatar">
+{{ post.author.username[0]|upper }}
+</div>
+
+<div class="meta">
+<h4>{{ post.author.username }}</h4>
+
+<span>
+{{ post.date_posted.strftime('%d %b %Y • %H:%M') }}
+</span>
+
+<small class="eco-rank">
+🌱 Eco Creator
+</small>
+</div>
+</div>
+</div>
+
+<div class="post-body">
+
+{% if post.title %}
+<h3>{{ post.title }}</h3>
+{% endif %}
+
+{% if post.content %}
+<p>{{ post.content }}</p>
+{% endif %}
+
+
+{% if post.media %}
+{% if post.media.endswith('.mp4') %}
+
+<video controls class="post-video">
+<source src="{{ url_for('static',
+filename='uploads/' ~ post.media) }}">
+</video>
+
+{% else %}
+
+<img
+src="{{ url_for('static',
+filename='uploads/' ~ post.media) }}"
+class="post-img">
+{% endif %}
+{% endif %}
+
+<div class="impact-box">
+🌍 Waste Saved • Community Creation
+</div>
+
+</div>
+
+<div class="post-actions">
+
+<button class="like-btn"
+data-post-id="{{post.id}}">
+❤️
+<span id="like-count-{{post.id}}">
+{{ post.likes|length }}
+</span>
+</button>
+
+<button class="share-btn"
+data-post-id="{{post.id}}">
+🔄
+<span id="share-count-{{post.id}}">
+{{ post.shares }}
+</span>
+</button>
+
+<button class="toggle-comment"
+data-post-id="{{post.id}}">
+💬 {{ post.comments|length }}
+</button>
+
+{% if session.get('user_id') == post.user_id %}
+<button class="delete-btn"
+data-post-id="{{post.id}}">
+🗑
+</button>
+{% endif %}
+</div>
+
+<div id="comments-{{post.id}}"
+class="comment-section"
+style="display:none;">
+
+    <div class="comments-list">
+
+        {% for comment in post.comments %}
+        <div class="comment-item">
+
+            <strong>{{ comment.user.username }}</strong>:
+            {{ comment.content }}
+
+            {% if session.get('user_id') == comment.user_id %}
+            <button
+            class="delete-comment"
+            data-comment-id="{{ comment.id }}">
+            🗑
+            </button>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <input
+    id="comment-input-{{post.id}}"
+    class="comment-input"
+    placeholder="Write comment...">
+
+    <button
+    class="comment-submit"
+    data-post-id="{{post.id}}">
+    Post
+    </button>
+</div>
+</div>
+
+{% endfor %}
+</div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static',
+filename='js/script.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}{{ idea.title }}{% endblock %}
+
+{% block content %}
+
+<section class="card" style="max-width:900px; margin:30px auto;">
+
+    <!-- Back -->
+    <a
+        href="{{ url_for('search') }}"
+        style="text-decoration:none;"
+    >
+        ← Back to Search
+    </a>
+
+    <h2 style="margin-top:20px;">
+        {{ idea.title }}
+    </h2>
+
+    <!-- Image -->
+    {% if idea.image %}
+    <div style="margin:20px 0;">
+        <img
+            src="{{ url_for('static', filename='image/' + idea.image) }}"
+            alt="{{ idea.title }}"
+            style="
+                width:500px;
+                max-width:100%;
+                border-radius:12px;
+                display:block;
+            "
+        >
+    </div>
+    {% endif %}
+
+    <!-- Material -->
+    <p>
+        <strong>Material:</strong>
+        {{ idea.material }}
+    </p>
+
+    <!-- Description -->
+    <h3>About this Idea</h3>
+
+    <p>
+        {{ idea.description }}
+    </p>
+
+</section>
+
+{% endblock %}

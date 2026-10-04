@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Community - Waste2Use{% endblock %}
+
+{% block content %}
+<section class="community">
+  <h2>🌍 Waste2Use Community</h2>
+  <div class="chat-box" id="chatBox">
+    {% for msg in messages %}
+    <div class="chat-message {% if msg.user_id == current_user.id %}mine{% else %}theirs{% endif %}">
+      <img src="{{ url_for('static', filename='image/earth.jpg') }}" class="avatar" alt="avatar">
+      <div class="bubble">
+        <div class="header">
+          <strong>{{ msg.username }}</strong>
+          <small>{{ msg.local_timestamp.strftime('%H:%M') }}</small>
+        </div>
+
+        {% if msg.message %}
+        <p style="color:#f0efef;">{{ msg.message }}</p>
+        {% endif %}
+
+        {% if msg.image %}
+          {% if msg.image.endswith('.mp4') or msg.image.endswith('.mov') %}
+          <video controls class="media">
+            <source src="{{ url_for('static', filename='uploads/' + msg.image) }}" type="video/mp4">
+          </video>
+          {% else %}
+          <img src="{{ url_for('static', filename='uploads/' + msg.image) }}" class="media">
+          {% endif %}
+        {% endif %}
+
+        {% if msg.user_id == current_user.id %}
+        <!-- 🗑 Delete Button -->
+        <form action="{{ url_for('delete_message', msg_id=msg.id) }}" method="POST" class="delete-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="delete-btn" title="Delete">🗑</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+ <form action="{{ url_for('community') }}" method="POST" enctype="multipart/form-data" class="message-form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="input-row">
+      <button type="button" id="emojiBtn" class="emoji-btn">😊</button>
+      <textarea id="messageInput" name="message" placeholder="Type a message..." required></textarea>
+      <label for="fileInput" class="file-label">📎</label>
+      <input type="file" id="fileInput" name="image" accept="image/*,video/*" hidden>
+      <button type="submit" class="send-btn">➤</button>
+    </div>
+    <div id="emojiPicker" class="emoji-picker" hidden></div>
+  </form>
+</section>
+
+<script>
+  const chatBox = document.getElementById("chatBox");
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  setInterval(() => {
+    fetch("/community")
+      .then(r => r.text())
+      .then(html => {
+        const parser = new DOMParser();
+        const newDoc = parser.parseFromString(html, "text/html");
+        document.getElementById("chatBox").innerHTML =
+          newDoc.querySelector("#chatBox").innerHTML;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      });
+  }, 5000);
+
+  const emojiBtn = document.getElementById("emojiBtn");
+  const emojiPicker = document.getElementById("emojiPicker");
+  const messageInput = document.getElementById("messageInput");
+  const emojis = ["😀","😂","😍","😎","😢","😡","👍","🙏","💚","♻️","🌱","🔥","💡"];
+  emojis.forEach(e => {
+    const span = document.createElement("span");
+    span.textContent = e;
+    span.style.cursor = "pointer";
+    span.onclick = () => {
+      messageInput.value += e;
+      emojiPicker.hidden = true;
+      messageInput.focus();
+    };
+    emojiPicker.appendChild(span);
+  });
+
+  emojiBtn.onclick = () => {
+    emojiPicker.hidden = !emojiPicker.hidden;
+  };
+</script>
+
+
+{% endblock %}

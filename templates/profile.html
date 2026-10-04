@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}{{ user.username }}'s Profile{% endblock %}
+{% block content %}
+
+<div class="profile-container">
+  <div class="profile-header">
+    <img src="{{ profile_pic }}" class="profile-pic" alt="Profile">
+    <h2>{{ user.username }}</h2>
+    <p class="bio">{{ user.bio if user.bio else "No bio added yet 😅" }}</p>
+  <a href="/edit_profile" class="edit-btn">Edit Profile</a>
+  </div>
+
+  <div class="floating-icons">
+  <span>🌿</span>
+  <span>🦋</span>
+  <span>🌸</span>
+  <span>🐢</span>
+  <span>🌍</span>
+</div>
+</div>
+
+<canvas id="confetti"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+  setTimeout(() => {
+    confetti({
+      particleCount: 120,
+      spread: 90,
+      origin: { y: 0.6 }
+    });
+  }, 800);
+</script>
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Leaderboard - Waste2Use{% endblock %}
+
+{% block content %}
+
+<div class="leaderboard-wrapper">
+  <div class="leaderboard-header">
+    <h2>🌸 Waste2Use Leaderboard</h2>
+    <p>Our eco heroes making the planet smile 🌍💚</p>
+  </div>
+
+  {% if users %}
+  <table class="leaderboard-table">
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>User</th>
+        <th>Posts</th>
+        <th>Points</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr class="rank-{{ loop.index }}">
+        <td class="rank">
+          {% if loop.index == 1 %}👑{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{% else %}{{ loop.index }}{% endif %}
+        </td>
+        <td class="username">{{ u.username }} <span class="sparkle">✨</span></td>
+        <td>🌱 {{ u.posts_count }}</td>
+        <td class="points">💚 {{ u.points }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="no-users">No eco heroes yet 🌿 Be the first to post!</p>
+  {% endif %}
+</div>
+{% endblock %}
