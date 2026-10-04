@@ -833,6 +833,26 @@ def community():
     )
 
 
+@app.route("/setup-admin")
+def setup_admin():
+
+    existing_admin = User.query.filter_by(role="admin").first()
+
+    if existing_admin:
+        return "Admin already exists."
+
+    admin = User(
+        username="admin",
+        email="admin@waste2use.com",
+        password=generate_password_hash("admin"),
+        role="admin"
+    )
+
+    db.session.add(admin)
+    db.session.commit()
+
+    return "Admin created successfully!"
+
 
 
 @app.route("/admin")
