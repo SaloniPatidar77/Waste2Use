@@ -54,10 +54,20 @@ def add_notification(user_id, message):
     db.session.commit()
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'app.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if DATABASE_URL:
+    app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
+else:
+    # Local development ke liye SQLite
+    app.config["SQLALCHEMY_DATABASE_URI"] = (
+        "sqlite:///" + os.path.join(BASE_DIR, "app.db")
+    )
+
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
 
 app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR, "static/uploads")
 app.config['PROFILE_PIC_FOLDER'] = os.path.join(BASE_DIR, 'static', 'uploads')
@@ -833,25 +843,6 @@ def community():
     )
 
 
-@app.route("/setup-admin")
-def setup_admin():
-
-    existing_admin = User.query.filter_by(role="admin").first()
-
-    if existing_admin:
-        return "Admin already exists."
-
-    admin = User(
-        username="admin",
-        email="admin@waste2use.com",
-        password=generate_password_hash("admin"),
-        role="admin"
-    )
-
-    db.session.add(admin)
-    db.session.commit()
-
-    return "Admin created successfully!"
 
 
 
