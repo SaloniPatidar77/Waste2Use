@@ -1,6 +1,6 @@
 ## 🖥️ Project Preview
 
-![Waste2Use Homepage](waste2use-homepage.png)
+![Waste2Use Homepage](ws.png)
 
 
 # 🌱 Waste2Use — Smart Waste Reuse & Sustainability Platform
