@@ -1,3 +1,8 @@
+## 🖥️ Project Preview
+
+![Waste2Use Homepage](waste2use-homepage.png)
+
+
 # 🌱 Waste2Use — Smart Waste Reuse & Sustainability Platform
 
 Waste2Use is a web-based platform designed to encourage sustainability by helping users discover creative ways to reuse waste materials.
